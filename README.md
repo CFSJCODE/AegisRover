@@ -1,4 +1,4 @@
-# 🛡️ Aegis Rover (Antigo Robô Sentinela)
+# 🛡️ Aegis Rover
 
 Protótipo UGV (Unmanned Ground Vehicle) autônomo para segurança e controle ambiental.
 
