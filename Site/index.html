@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEGIS ROVER — Autonomous Sentinel System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="14" cy="14" r="4" fill="currentColor" opacity="0.8"/>
+      <line x1="14" y1="2" x2="14" y2="10" stroke="currentColor" stroke-width="1"/>
+      <line x1="14" y1="18" x2="14" y2="26" stroke="currentColor" stroke-width="1"/>
+      <line x1="2" y1="8" x2="10" y2="12" stroke="currentColor" stroke-width="1"/>
+      <line x1="18" y1="16" x2="26" y2="20" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    AEGIS ROVER
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">Visão Geral</a></li>
+    <li><a href="#features">Recursos</a></li>
+    <li><a href="#specs">Especificações</a></li>
+    <li><a href="#architecture">Arquitetura</a></li>
+    <li><a href="#team">Equipe</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Documentação</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="padding:0; max-width:100%; margin:0;">
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="scan-line"></div>
+
+  <div class="hud-corner hud-tl"></div>
+  <div class="hud-corner hud-tr"></div>
+  <div class="hud-corner hud-bl"></div>
+  <div class="hud-corner hud-br"></div>
+
+  <div class="hud-data left">
+    <span>SYS STATUS: <span class="val" id="hud-status">ONLINE</span></span>
+    <span>UPTIME: <span class="val" id="hud-uptime">00:00:00</span></span>
+    <span>LAT: <span class="val">-19.922° S</span></span>
+    <span>LON: <span class="val">-43.991° W</span></span>
+  </div>
+  <div class="hud-data right">
+    <span>SENSOR LiDAR: <span class="val">LD14P ACTIVE</span></span>
+    <span>BASE: <span class="val" id="hud-base">ROCKET TANK</span></span>
+    <span>FREQ: <span class="val">240 MHz (Xtensa)</span></span>
+    <span>FIRMWARE: <span class="val">v1.0 (FreeRTOS)</span></span>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Protótipo UGV para Segurança Ambiental</div>
+    <h1 class="hero-title">
+      <span class="glitch" data-text="AEGIS">AEGIS</span>
+      <span>ROVER</span>
+    </h1>
+    <p class="hero-sub">Mapeamento Espacial · Aquisição Telemétrica · Atuação Responsiva</p>
+    <div class="hero-buttons">
+      <a href="#about" class="btn-primary">Explorar Projeto</a>
+      <a href="https://github.com/CFSJCODE/AegisRover" target="_blank" class="btn-outline">Ver no GitHub</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">SCROLL</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">[ 01 ]</span>
+    <h2 class="section-title">Visão <span>Geral</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="reveal">O <strong>Aegis Rover</strong> é um protótipo Unmanned Ground Vehicle (UGV) autônomo focado em missões de segurança, monitoramento e mitigação de riscos em ambientes residenciais ou industriais. O projeto representa a evolução direta do sistema "Robô Sentinela", transitando de um monitoramento passivo para uma plataforma totalmente proativa.</p>
+      <p class="reveal reveal-delay-1">Desenvolvido sobre a base esteirada <strong>Rocket Tank (RoboCore)</strong>, o rover conta com alta mobilidade para superar terrenos complexos. O cérebro da operação é a placa <strong>RoboCore Vespa (ESP32)</strong> rodando FreeRTOS, combinando mapeamento espacial a laser, leitura de gases inflamáveis e atuação física local em tempo real.</p>
+      <p class="reveal reveal-delay-2">Diferente de sistemas tradicionais, o Aegis Rover atua no ambiente: se o sensor MQ-02 detectar anomalias como vazamento de gás, ele aciona automaticamente um sistema de exaustão e alarmes, demonstrando a verdadeira aplicação de sistemas ciberfísicos para preservação de patrimônio.</p>
+      <div class="about-stats reveal reveal-delay-3">
+        <div class="stat-box">
+          <div class="stat-val">360°</div>
+          <div class="stat-label">Visão LiDAR LD14P</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">8m</div>
+          <div class="stat-label">Raio de Mapeamento</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">STA+AP</div>
+          <div class="stat-label">Modo Wi-Fi (IoT)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">RTOS</div>
+          <div class="stat-label">Processamento</div>
+        </div>
+      </div>
+    </div>
+    <div class="rover-3d-wrapper reveal reveal-delay-2">
+      <div class="rover-3d-scene">
+        <div class="orbit-ring"></div>
+        <div class="rover-body"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-header reveal">
+    <span class="section-num">[ 02 ]</span>
+    <h2 class="section-title">Recursos <span>Principais</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+      </div>
+      <div class="feature-title">MAPEAMENTO ESPACIAL</div>
+      <div class="feature-desc">Integração com sensor LiDAR WayPonDEV LD14P 2D 360 Graus. Realiza varredura de 2300Hz com raio de 8m para mapeamento do ambiente, evasão de obstáculos e navegação.</div>
+      <span class="feature-tag">LiDAR · LD14P · SLAM</span>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="feature-title">BASE DE ALTA MOBILIDADE</div>
+      <div class="feature-desc">Chassi Rocket Tank impulsionado por motores com caixa de redução e duas Ponte-H DRV8837, que já estão embutidas na própria placa RoboCore Vespa, garantindo tração em esteiras para transpor pequenos obstáculos na ronda.</div>
+      <span class="feature-tag">Rocket Tank · DRV8837 · UGV</span>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div class="feature-title">AQUISIÇÃO TELEMÉTRICA</div>
+      <div class="feature-desc">Sensores MQ-02 (gás inflamável) e AHT10 em leitura constante. O firmware adquire amostras analógicas e converte em dados de anomalias com algoritmos de suavização e limites.</div>
+      <span class="feature-tag">MQ-02 · AHT10 · ADC</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="feature-title">ATUAÇÃO RESPONSIVA</div>
+      <div class="feature-desc">Mitigação de riscos em tempo real. Se gás for detectado, o sistema aciona um Relé que aciona uma sirene Intelbras SIR1000 e controla um Cooler 12V para exaustão local.</div>
+      <span class="feature-tag">Relé · Sirene SIR1000 · Cooler 12V</span>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+        </svg>
+      </div>
+      <div class="feature-title">SISTEMA EMBARCADO (RTOS)</div>
+      <div class="feature-desc">Arquitetura baseada em FreeRTOS no módulo ESP32 da placa Vespa. Suspensão de tarefas (Task Suspension) para eficiência energética e Power Management, alocando recursos de CPU dinamicamente.</div>
+      <span class="feature-tag">RoboCore Vespa · ESP32 · FreeRTOS</span>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          <path d="M12 2a10 10 0 010 20"/>
+        </svg>
+      </div>
+      <div class="feature-title">CONECTIVIDADE IoT E REDE</div>
+      <div class="feature-desc">Infraestrutura com modos concorrentes (Station + AP). Sincronização temporal via NTP (Network Time Protocol) e Dashboard Web Assíncrono com polling adaptativo por AJAX/Fetch.</div>
+      <span class="feature-tag">Wi-Fi 6 · NTP · Dashboard</span>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section id="specs">
+  <div class="section-header reveal">
+    <span class="section-num">[ 03 ]</span>
+    <h2 class="section-title">Especificações <span>Técnicas</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="specs-layout">
+    <div>
+      <div class="spec-group reveal">
+        <div class="spec-group-title">Hardware & Core</div>
+        <div class="spec-item"><span class="spec-key">Microcontrolador</span><span class="spec-value">RoboCore Vespa (ESP32)</span></div>
+        <div class="spec-item"><span class="spec-key">Clock Principal</span><span class="spec-value">240 MHz Dual-Core</span></div>
+        <div class="spec-item"><span class="spec-key">Plataforma Móvel</span><span class="spec-value">Rocket Tank (RoboCore)</span></div>
+        <div class="spec-item"><span class="spec-key">Drive de Motor</span><span class="spec-value">2x Ponte-H DRV8837 (Embutidas)</span></div>
+        <div class="spec-item"><span class="spec-key">Comunicação</span><span class="spec-value">Wi-Fi 6 (802.11ax)</span></div>
+        <div class="spec-item"><span class="spec-key">Alimentação Geral</span><span class="spec-value">Bateria / Distribuição Custom</span></div>
+      </div>
+      <div class="spec-group reveal reveal-delay-1">
+        <div class="spec-group-title">Sensores</div>
+        <div class="spec-item"><span class="spec-key">LiDAR 2D</span><span class="spec-value">LD14P (2300Hz, 8m)</span></div>
+        <div class="spec-item"><span class="spec-key">Sensor de Gás</span><span class="spec-value">MQ-02 (Gás Inflamável)</span></div>
+        <div class="spec-item"><span class="spec-key">Temp / Umidade</span><span class="spec-value">AHT10 (I2C)</span></div>
+      </div>
+      <div class="spec-group reveal reveal-delay-2">
+        <div class="spec-group-title">Atuadores & Mitigação</div>
+        <div class="spec-item"><span class="spec-key">Driver Lógico</span><span class="spec-value">Relé (GPIO 22)</span></div>
+        <div class="spec-item"><span class="spec-key">Exaustão</span><span class="spec-value">Cooler 12V Ativo</span></div>
+        <div class="spec-item"><span class="spec-key">Alarme Sonoro</span><span class="spec-value">Sirene SIR1000 (GPIO 20)</span></div>
+      </div>
+      <div class="bar-chart reveal reveal-delay-3">
+        <div class="spec-group-title">Análise do Sistema</div>
+        <div class="bar-item">
+          <span class="bar-label">Mapeamento</span>
+          <div class="bar-track"><div class="bar-fill" data-width="95"></div></div>
+          <span class="bar-val">95%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Precisão Gás</span>
+          <div class="bar-track"><div class="bar-fill" data-width="88"></div></div>
+          <span class="bar-val">88%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Tempo Resposta</span>
+          <div class="bar-track"><div class="bar-fill" data-width="92"></div></div>
+          <span class="bar-val">92%</span>
+        </div>
+        <div class="bar-item">
+          <span class="bar-label">Eficiência (DFS)</span>
+          <div class="bar-track"><div class="bar-fill" data-width="85"></div></div>
+          <span class="bar-val">85%</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot r"></div>
+          <div class="terminal-dot y"></div>
+          <div class="terminal-dot g"></div>
+          <span class="terminal-title">vespa@aegis-rover ~ boot log</span>
+        </div>
+        <div class="terminal-body">
+          <span class="terminal-line"><span class="t-prompt">vespa@aegis:~$</span> <span class="t-cmd">./start_aegis_os</span></span>
+          <span class="terminal-line"><span class="t-out">Initializing FreeRTOS kernel...</span></span>
+          <span class="terminal-line"> </span>
+          <span class="terminal-line"><span class="t-warn">[ SYSTEM ]</span> <span class="t-out">CFSJ TECH Network & Automation</span></span>
+          <span class="terminal-line"><span class="t-out">Core: </span><span class="t-val">Xtensa Dual-Core (240 MHz)</span></span>
+          <span class="terminal-line"><span class="t-out">Firmware: </span><span class="t-val">v2.1.0 (Green IoT Update)</span></span>
+          <span class="terminal-line"> </span>
+          <span class="terminal-line"><span class="t-warn">[ NETWORK ]</span></span>
+          <span class="terminal-line"><span class="t-out">  Interface STA (DLINK)......</span><span class="t-ok">CONNECTED (192.168.0.55)</span></span>
+          <span class="terminal-line"><span class="t-out">  Interface AP...............</span><span class="t-ok">ACTIVE (192.168.4.1)</span></span>
+          <span class="terminal-line"><span class="t-out">  NTP Time Sync..............</span><span class="t-ok">SYNCED</span></span>
+          <span class="terminal-line"> </span>
+          <span class="terminal-line"><span class="t-warn">[ PERIPHERALS ]</span></span>
+          <span class="terminal-line"><span class="t-out">  LiDAR LD14P (UART).........</span><span class="t-ok">OK [2300Hz stream]</span></span>
+          <span class="terminal-line"><span class="t-out">  MQ-02 Gas (GPIO 03/21).....</span><span class="t-ok">OK [Reading nominal]</span></span>
+          <span class="terminal-line"><span class="t-out">  AHT10 Env (I2C)............</span><span class="t-ok">OK</span></span>
+          <span class="terminal-line"><span class="t-out">  Relé Atuador (GPIO 22).....</span><span class="t-ok">STANDBY</span></span>
+          <span class="terminal-line"><span class="t-out">  Sirene SIR1000 (GPIO 20)...</span><span class="t-ok">STANDBY</span></span>
+          <span class="terminal-line"><span class="t-out">  Motor Driver (DRV8837).....</span><span class="t-ok">ARMED</span></span>
+          <span class="terminal-line"> </span>
+          <span class="terminal-line"><span class="t-warn">[ RTOS TASKS ]</span></span>
+          <span class="terminal-line"><span class="t-out">  Sensor Polling.............</span><span class="t-ok">RUNNING</span></span>
+          <span class="terminal-line"><span class="t-out">  Actuator Control...........</span><span class="t-val">SUSPENDED (0% CPU)</span></span>
+          <span class="terminal-line"><span class="t-out">  Web Dashboard..............</span><span class="t-ok">READY</span></span>
+          <span class="terminal-line"> </span>
+          <span class="terminal-line"><span class="t-ok">Sentinela Autônomo online. Patrulha habilitada.</span></span>
+          <span class="terminal-line"><span class="t-prompt">vespa@aegis:~$</span> <span class="blink">█</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="section-header reveal">
+    <span class="section-num">[ 04 ]</span>
+    <h2 class="section-title">Módulos de <span>Arquitetura</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="arch-grid">
+    <div class="arch-module reveal">
+      <div class="arch-module-num">01</div>
+      <div class="arch-module-title">PERCEPÇÃO (LiDAR)</div>
+      <div class="arch-module-desc">Sensor LD14P capturando milhares de pontos 2D ao redor do robô para representação espacial e detecção de obstáculos na ronda.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>OPERACIONAL</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-1">
+      <div class="arch-module-num">02</div>
+      <div class="arch-module-title">TELEMETRIA AMBIENTAL</div>
+      <div class="arch-module-desc">Conversão ADC do sensor MQ-02 (Gás) e leituras I2C do AHT10 para monitorar continuamente o ambiente por vazamentos.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>ATIVO</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-2">
+      <div class="arch-module-num">03</div>
+      <div class="arch-module-title">LOCOMOÇÃO ESTEIRADA</div>
+      <div class="arch-module-desc">Base Rocket Tank controlada por duas Ponte-H DRV8837 embutidas na placa Vespa. Permite giro sobre o próprio eixo (diferencial) e transposição de degraus.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>ATIVO</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-3">
+      <div class="arch-module-num">04</div>
+      <div class="arch-module-title">ATUAÇÃO E MITIGAÇÃO</div>
+      <div class="arch-module-desc">Controle proativo através de Relé, Sirene (SIR1000) e exaustão (Cooler 12V), acionados localmente pelo microcontrolador ante anomalias.</div>
+      <div class="arch-module-status orange"><div class="status-dot orange"></div>STANDBY</div>
+    </div>
+    <div class="arch-module reveal">
+      <div class="arch-module-num">05</div>
+      <div class="arch-module-title">CÉREBRO EMBARCADO</div>
+      <div class="arch-module-desc">Placa RoboCore Vespa (ESP32) gerenciando loops de controle em FreeRTOS. Uso de Dynamic Frequency Scaling (DFS) para otimização de energia (Green IoT).</div>
+      <div class="arch-module-status"><div class="status-dot"></div>EM EXECUÇÃO</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-1">
+      <div class="arch-module-num">06</div>
+      <div class="arch-module-title">INFRAESTRUTURA DE REDE</div>
+      <div class="arch-module-desc">Gerenciamento dinâmico STA + AP isolado com sincronização NTP, permitindo operação local robusta ou acesso à rede principal.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>CONECTADO</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-2">
+      <div class="arch-module-num">07</div>
+      <div class="arch-module-title">DASHBOARD WEB</div>
+      <div class="arch-module-desc">Servidor assíncrono embarcado. Interface de supervisão via celular/PC usando AJAX/Fetch, mostrando gráficos de gás e atuadores.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>ONLINE</div>
+    </div>
+    <div class="arch-module reveal reveal-delay-3">
+      <div class="arch-module-num">08</div>
+      <div class="arch-module-title">ALARMES</div>
+      <div class="arch-module-desc">Integração de hardware (Sirene SIR1000) ao loop lógico de exceção, engatilhando eventos imediatos quando limites de gás são rompidos.</div>
+      <div class="arch-module-status"><div class="status-dot"></div>ARMADO</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-header reveal">
+    <span class="section-num">[ 05 ]</span>
+    <h2 class="section-title">Equipe & <span>Autoria</span></h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-role">Professor Supervisor</div>
+      <div class="team-name">Júlio César Dillinger Conway</div>
+      <div class="team-links">
+        <a href="https://www.linkedin.com/in/julio-conway-d-sc-09092819/" target="_blank" title="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a href="http://lattes.cnpq.br/7018520669345376" target="_blank" title="Currículo Lattes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-1">
+      <div class="team-role">Desenvolvedor / Lead Eng.</div>
+      <div class="team-name">Cláudio Francisco D. S. Júnior</div>
+      <div class="team-links">
+        <a href="https://github.com/CFSJCODE" target="_blank" title="GitHub">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/claudio-francisco-dos-santos-junior/" target="_blank" title="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+        <a href="https://lattes.cnpq.br/9581278395342699" target="_blank" title="Currículo Lattes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-2">
+      <div class="team-role">Desenvolvedor</div>
+      <div class="team-name">Lucas Emanuel Simão Silva</div>
+      <div class="team-links">
+        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--c-muted); opacity: 0.9; font-weight: bold;">ENG. DA COMPUTAÇÃO - PUC MINAS</span>
+      </div>
+    </div>
+    <div class="team-card reveal reveal-delay-3">
+      <div class="team-role">Desenvolvedor</div>
+      <div class="team-name">João Pedro Torres</div>
+      <div class="team-links">
+        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--c-muted); opacity: 0.9; font-weight: bold;">ENG. DA COMPUTAÇÃO - PUC MINAS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" style="max-width:100%; margin:0;">
+  <div class="cta-inner">
+    <div class="cta-label reveal">[ IoT & Segurança Cibernética Integrada ]</div>
+    <h2 class="cta-title reveal reveal-delay-1">Explore o código fonte do <span>Aegis Rover</span></h2>
+    <p class="cta-sub reveal reveal-delay-2">Acesse o repositório GitHub para verificar os esquemáticos, firmware em C++ (ESP-IDF/Arduino Core) e a documentação completa dos algoritmos de RTOS.</p>
+    <div class="cta-buttons reveal reveal-delay-3">
+      <a href="https://github.com/CFSJCODE/AegisRover" target="_blank" class="btn-primary">Acessar Repositório</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">AEGIS ROVER</div>
+  <div class="footer-text">
+    PUC Minas - Engenharia de Computação (IoT) | Prof. Júlio César Dillinger Conway<br>
+    Desenvolvido por Cláudio Francisco, Lucas Emanuel e João Pedro (2026)
+  </div>
+  <div class="footer-status">
+    <div class="status-dot"></div>
+    SISTEMA ONLINE
+  </div>
+</footer>
+
+<!-- Three.js CDN must come BEFORE main.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>
