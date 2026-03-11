@@ -1,0 +1,43 @@
+# Nome do workflow
+name: Deploy do Diretório "Site" para GitHub Pages
+
+# Define os gatilhos: executa ao fazer push na branch principal e permite execução manual
+on:
+  push:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+# Permissões necessárias para o GITHUB_TOKEN ler o repositório e publicar no Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite apenas um deploy concorrente
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Job único de build e deploy
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload do Artefato (Apontando para a pasta "Site")
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # AQUI ESTÁ A MÁGICA: Define o caminho exato que será publicado
+          path: './Site'
+
+      - name: Deploy para o GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
