@@ -1,154 +1,134 @@
-# 🛡️ Aegis Rover
+# AegisRover
 
-Protótipo UGV (Unmanned Ground Vehicle) autônomo para segurança e controle ambiental.
+AegisRover e um prototipo UGV academico para IoT, navegacao e monitoramento ambiental. O projeto combina firmware ESP32/RoboCore Vespa, LiDAR LD14P, telemetria BME688 via MQTT, persistencia MySQL e camadas Python para visualizacao, treinamento de IA e exportacao Bosch BME AI-Studio.
 
----
+## Estado Atual
 
-## Sobre o Projeto
+- Sensor ambiental principal: BME688.
+- Navegacao: LiDAR LD14P com parser, grade de ocupacao e modulos C para planejamento.
+- Persistencia: coletores MQTT/MySQL com tabelas separadas para visualizacao, treinamento, inferencias e exportacao Bosch.
+- Firmware: sketches Arduino/ESP32 para motores, BME688, LiDAR e integracao BME688 + LD14P.
+- Referencias: datasheets, manuais, limites operacionais e modelos 3D do suporte do LiDAR.
 
-O Aegis Rover é um projeto desenvolvido como trabalho prático da disciplina de Internet of Things (IoT), integrante do 3º período do curso de Engenharia de Computação da PUC Minas - Unidade Coração Eucarístico. O desenvolvimento deste protótipo é supervisionado pelo Professor Júlio César Dillinger Conway.
+MQ-2 e AHT10 aparecem no historico do repositorio remoto anterior, mas nesta organizacao o fluxo ambiental ativo esta centrado no BME688. O LiDAR LD14P permanece como excecao de navegacao.
 
-Desenvolvido sobre a base mecânica Rocket Tank, o Aegis Rover atua como um escudo digital proativo (inspirado na mítica Égide). Ele combina mapeamento espacial a laser (LiDAR), aquisição de dados telemétricos ambientais e atuação responsiva de motores e periféricos para detecção e mitigação de anomalias, como vazamentos de gás ou picos de temperatura.
+## Estrutura do Repositorio
 
----
+```text
+AegisRover/
+|-- Banco De Dados/
+|   `-- ExibirDados.txt
+|-- Codigos_Python/
+|   |-- Banco De Dados/
+|   |-- AegisRover_BME688_DataPipeline/
+|   `-- AegisRover_BME688_BoschExporter/
+|-- Datasheets_Manuais/
+|-- Firmwares/
+|-- Modelo_3D_Suporte_LiDAR/
+|-- Sistema_Navegacao_LiDAR/
+|-- Softwares/
+|-- tools/
+`-- .github/workflows/
+```
 
-## 📑 Índice
+## Pipelines Python
 
-1. [Visão Geral e Fundamentação](#-visão-geral-e-fundamentação)
-2. [Arquitetura de Hardware](#-arquitetura-de-hardware)
-3. [Arquitetura de Software (FreeRTOS)](#-arquitetura-de-software-freertos)
-4. [Sistemas de Mobilidade e Defesa Ativa](#-sistemas-de-mobilidade-e-defesa-ativa)
-5. [Interface Web (Dashboards SPA)](#-interface-web-dashboards-spa)
-6. [Configuração e Deploy](#-configuração-e-deploy)
-7. [Equipe e Autoria](#-equipe-e-autoria)
+### Pipeline BME688 para IA
 
----
+```powershell
+cd Codigos_Python\AegisRover_BME688_DataPipeline
+python -m pip install -r requirements.txt
+copy .env.example .env
+python bd_bme688_mqtt_ia.py
+```
 
-## 🎯 Visão Geral e Fundamentação
+Tabelas principais:
 
-O sistema Aegis transcende o simples monitoramento passivo. Diferente de sistemas que apenas registram dados, este robô atua no ambiente físico de forma determinística.
+- `dados_bme688_colunar`
+- `dados_bme688_ia_treinamento`
+- `dados_bme688_ia_inferencias`
 
-Ele integra telemetria LiDAR por triangulação laser para SLAM (Simultaneous Localization and Mapping) e uma camada de comunicação híbrida (Bluetooth Low Energy e Wi-Fi). A adoção de um sistema operacional de tempo real (FreeRTOS) no microcontrolador garante determinismo absoluto no processamento de sinais e redundância na entrega de dados críticos.
+Topicos MQTT aceitos:
 
-**Por que "Aegis"?** Na mitologia, Aegis (Égide) é o escudo impenetrável. O nome transmite imediatamente o conceito de segurança patrimonial, proteção proativa (mitigação de riscos) e monitoramento contínuo.
+```text
+puc/iot/bme688/temperatura
+puc/iot/bme688/pressao
+puc/iot/bme688/umidade
+puc/iot/bme688/gas
+puc/iot/bme688/altitude
+puc/iot/bme688/telemetria
+aegis/sensor/bme688/sample
+```
 
----
+### Exportador Bosch BME AI-Studio
 
-## 🛠️ Arquitetura de Hardware
+```powershell
+cd Codigos_Python\AegisRover_BME688_BoschExporter
+python -m pip install -r requirements.txt
+copy .env.example .env
+python collectors\bd_bme688_mqtt_raw.py
+python exporters\export_bmerawdata.py --sessao S001 --out exports\bmerawdata
+python exporters\validate_bmerawdata.py exports\bmerawdata\S001_ar_limpo.bmerawdata
+```
 
-### Plataforma Central
+Tabela dedicada:
 
-- **Microcontrolador:** ESP32-C6 (Arquitetura RISC-V, Single-Core)
-- **Driver de Potência:** Futura substituição pela placa RoboCore Vespa (Ponte-H integrada)
-- **Base Robótica:** Chassi esteirado Rocket Tank (RoboCore)
+- `dados_bme688_bosch_raw`
 
-### Gerenciamento de Energia e Modificações
+Topico MQTT raw:
 
-Para garantir a integridade dos motores e a autonomia do sistema:
+```text
+puc/iot/bme688/raw
+```
 
-- **Alimentação Atual:** Pack de baterias modificado para operar com duas baterias 18650 (7.4V nominal)
-- **Upgrade Planejado:** Futura substituição por um pack 2S2P (2 Séries, 2 Paralelos), visando duplicar a capacidade de corrente e autonomia
-- **Regulação de Tensão:** Inclusão de um regulador L7805CV para fornecer 5V estáveis aos motores e eletrônica
+A camada Bosch trabalha em paralelo. Ela nao substitui `dados_bme688_colunar`, `dados_bme688_ia_treinamento` nem `dados_bme688_ia_inferencias`.
 
-### Sensores e Atuadores
+## Firmware
 
-- **LiDAR LD14P:** Mapeamento 2D 360º (Telemetria e Evasão de Obstáculos)
-- **AHT10:** Telemetria Climática de alta precisão (Temperatura e Umidade Relativa)
-- **MQ-02:** Detector de gases inflamáveis e fumaça
-- **Atuação Ambiental:** Relé para acionamento de Cooler/Exaustor 12V e Buzzer de Alarme
+Arquivos principais:
 
-### 🔌 Pinagem Física Principal (ESP32-C6)
+- `Firmwares/Codigo_BME688_LD14P/Codigo_BME688_LD14P.ino`
+- `Firmwares/BME688/BME688_Com_Banco_De_Dados/AegisRover_BME688_MQTT_Adapted/AegisRover_BME688_MQTT_Adapted.ino`
+- `Firmwares/CodigoMotores/CodigoMotores.ino`
+- `Firmwares/LiDAR/WayPonDEV_LD14P_Wifi/WayPonDEV_LD14P_Wifi.ino`
 
-| Dispositivo / Fio | Função / Ponto | GPIO ESP32-C6 | Protocolo |
-|---|---|---|---|
-| LiDAR Branco | Dados (RX) | GPIO 11 | UART1 RX (230400 bd) |
-| LiDAR Vermelho | Motor PWM | GPIO 10 | PWM (H-bridge) |
-| AHT10 SCL | I2C Clock | GPIO 7 | I2C |
-| AHT10 SDA | I2C Data | GPIO 6 | I2C |
-| Relé (Cooler) | Atuador Digital | GPIO 5 | Digital Out |
-| MQ-02 A0 | Leitura Analógica | GPIO 3 | ADC1_CH3 |
-| Buzzer | Alarme Sonoro | GPIO 20 | Digital Out |
-| Motor L (Vespa) | PWM / DIR | GPIO 6 / GPIO 7 | Tração Esquerda |
-| Motor R (Vespa) | PWM / DIR | GPIO 4 / GPIO 5 | Tração Direita |
+As bibliotecas Arduino compactadas em `Firmwares/Bibliotecas/` ficam fora do Git. Prefira instalar dependencias pela Arduino IDE, PlatformIO ou gerenciador oficial da biblioteca.
 
----
+## Navegacao LiDAR
 
-## 🧠 Arquitetura de Software (FreeRTOS)
+O nucleo em C fica em `Sistema_Navegacao_LiDAR/NavSys_C` e inclui:
 
-O firmware utiliza princípios de Domain-Driven Design (DDD) e o Padrão Monitor, com acesso seguro às variáveis globais através de Mutexes (SemaphoreHandle_t).
+- parser do LD14P;
+- filtro de varredura;
+- grade de ocupacao;
+- visualizacao CSV;
+- A*;
+- testes de parser, grid, HAL Linux e A*.
 
-### Distribuição de Tarefas (RTOS Scheduler)
+Build local dos modulos C:
 
-- **vTaskLidar:** Processa pacotes UART, valida CRC8 e gera a grade de ocupação espacial
-- **vTaskSensor:** Polling I2C estrito do AHT10 e MQ-02 com avaliação de conforto térmico
-- **vTaskDrive:** Controle cinemático concorrente (20ms/ciclo) com lógicas de proteção térmica
-- **vTaskNetwork & vTaskBLE:** Gerencia infraestrutura TCP/IP (LwIP) e metadados via GATT Bluetooth
-- **vTaskPowerMonitor:** Coloca o UGV em Deep-Sleep automático após inatividade para preservar as baterias 18650
+```powershell
+cd Sistema_Navegacao_LiDAR\NavSys_C
+bash build.sh --test-parser
+bash build.sh --test-grid
+bash build.sh --test-astar
+bash build.sh --main
+```
 
----
+## Softwares e Binarios
 
-## 🛡️ Sistemas de Mobilidade e Defesa Ativa
+SDKs Bosch, instaladores, bibliotecas compiladas, arquivos extraidos do BME AI-Studio e outros binarios grandes nao sao versionados. A pasta `Softwares/` contem apenas um README explicando como recompor o ambiente local.
 
-O firmware incorpora camadas de proteção mecânica e elétrica (específicas para a placa Vespa):
+## Validacao
 
-- **TCS Progressivo (Traction Control System):** Monitora o Slip Ratio e reduz o torque até 3V para recuperar aderência
-- **Modo Overdrive:** Boost temporário (1.8A Peak) para aclives críticos com cooldown térmico obrigatório
-- **PIM (Proteção de Integridade Mecânica):** Rampa de desaceleração adaptativa em declives para proteger a caixa de redução (90:1)
-- **Rampa Assíncrona (Slew Rate):** Interpolação temporal para mitigar picos indutivos sem bloquear o processador
+Valide o repositorio antes de publicar:
 
----
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\validate-project.ps1
+```
 
-## 💻 Interface Web (Dashboards SPA)
+O script compila todos os arquivos Python. Em Linux/CI, quando `gcc` esta disponivel, tambem compila os alvos C principais do `NavSys_C`.
 
-O robô hospeda um WebServer embutido com interfaces baseadas em Tailwind CSS e Vanilla JS.
+## Autoria
 
-- **Command Center:** Status geral com temática "Radar UI"
-- **LiDAR Radar:** Renderização em Canvas HTML5 da matriz Polar e Cartesiana
-- **Climate Hub:** Visualização termográfica e cálculo do "Índice de Conforto Térmico"
-- **System Integrity:** Switches em tempo real para ativar/desativar PIM, TCS e Overdrive
-
----
-
-## 🚀 Configuração e Deploy
-
-### Pré-requisitos
-
-- **IDE:** VS Code + PlatformIO ou Arduino IDE 2.x
-- **Placa:** ESP32-C6 Dev Module (Core v3.0.0+)
-- **Bibliotecas:** WiFi, WebServer, ESPmDNS, BLEDevice, Wire, esp_pm
-
-### Como Rodar
-
-1. Clone o repositório
-2. Configure as credenciais nas constantes `SSID_STA` e `PASSWORD_STA`
-3. Ajuste o IP Estático se necessário (Padrão: 192.168.0.55)
-4. Compile e faça o upload para o ESP32-C6
-5. Acesse `192.168.0.55` no navegador
-
----
-
-## 📜 Histórico e Nomenclatura
-
-Inicialmente idealizado como Robô Sentinela, o projeto evoluiu para Aegis Rover. A mudança reflete a transição de um sistema de monitoramento passivo para uma plataforma UGV proativa capaz de intervir no ambiente para proteção patrimonial e mitigação de riscos.
-
----
-
-## 👨‍💻 Equipe e Autoria
-
-| Campo | Informação |
-|---|---|
-| **Instituição** | PUC Minas - Unidade Coração Eucarístico |
-| **Curso** | Engenharia de Computação (3º Período) |
-| **Disciplina** | Internet of Things (IoT) |
-| **Professor Supervisor** | Júlio César Dillinger Conway |
-| **Ano** | 2026 |
-
-### Desenvolvedores
-
-- **Cláudio Francisco Dos Santos Júnior** 
-- **Lucas Emanuel Simão Silva**
-- **João Pedro Torres**
-
----
-
-**Construído com componentes RoboCore e tecnologia Espressif.**
+Projeto academico da disciplina Internet das Coisas I, Engenharia de Computacao - PUC Minas.

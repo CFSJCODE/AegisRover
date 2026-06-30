@@ -1,0 +1,25 @@
+* text=auto
+
+*.py text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.cpp text eol=lf
+*.ino text eol=lf
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.md text eol=lf
+*.sql text eol=lf
+*.scad text eol=lf
+
+*.pdf binary
+*.xlsx binary
+*.stl binary
+*.fzpz binary
+*.zip binary
+*.gx binary
+*.bin binary
+*.a binary
+*.dll binary
+*.exe binary
+*.pak binary
+*.asar binary

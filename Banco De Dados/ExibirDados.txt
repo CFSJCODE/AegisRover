@@ -1,0 +1,13 @@
+SELECT
+    id,
+    recebido_em,
+    temperatura,
+    pressao,
+    umidade,
+    gas,
+    altitude,
+    menor_distancia_mm,
+    menor_distancia_cm,
+    menor_distancia_m
+FROM `dados_aegis_rover`
+ORDER BY recebido_em DESC

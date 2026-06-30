@@ -1,0 +1,60 @@
+# Local configuration and credentials
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Build/test output
+build/
+dist/
+outputs/
+output/
+*.log
+*.tmp
+
+# Navigation generated artifacts
+Sistema_Navegacao_LiDAR/NavSys_C/build/
+Sistema_Navegacao_LiDAR/NavSys_C/scan_raw.bin
+Sistema_Navegacao_LiDAR/NavSys_C/tests/*.log
+
+# Generated BME688 exports
+Codigos_Python/**/exports/**
+!Codigos_Python/**/exports/
+!Codigos_Python/**/exports/.gitkeep
+!Codigos_Python/**/exports/**/
+!Codigos_Python/**/exports/**/.gitkeep
+
+# Vendor SDKs, installers and extracted desktop tools
+Softwares/**
+!Softwares/
+!Softwares/README.md
+Firmwares/Bibliotecas/*.zip
+
+# Large/generated binaries
+*.zip
+*.exe
+*.dll
+*.pak
+*.asar
+*.a
+*.pdb
+*.lib
+*.exp
+*.bin
+*.gx
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
