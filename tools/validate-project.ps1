@@ -65,7 +65,7 @@ try {
         }
     }
 
-    $pythonCommand = Get-PythonCommand
+    $pythonCommand = @(Get-PythonCommand)
     $pythonExe = $pythonCommand[0]
     $pythonArgs = @()
     if ($pythonCommand.Count -gt 1) {
