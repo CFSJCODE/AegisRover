@@ -81,7 +81,7 @@ Também é aceito:
 aegis/sensor/bme688/sample
 ```
 
-## Comandos CLI
+## Comandos da CLI
 
 ```text
 ver
@@ -128,7 +128,7 @@ Enquanto a sessão IA está ativa e a classe está definida, cada amostra válid
 
 ## Exportação CSV
 
-Pelo CLI:
+Pela CLI:
 
 ```text
 exportar ia
@@ -149,7 +149,7 @@ O pipeline prepara campos para BSEC/BSEC2 e BME AI-Studio, mas não afirma que e
 - `bme_ai_studio_project`
 - `bsec_config_nome`
 
-O arquivo exportado pelo BME AI-Studio/BSEC ainda precisa ser fornecido para integração real com classificação treinada.
+O arquivo exportado pelo BME AI-Studio/BSEC ainda precisa ser fornecido para que a integração com classificação treinada seja real.
 
 ## Compatibilidade SQL
 

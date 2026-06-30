@@ -1,16 +1,16 @@
-# Coleta Raw BME688
+# Coleta bruta do BME688
 
 ## Objetivo
 
-Coletar amostras do BME688 com a estrutura necessaria para gerar `.bmerawdata`. Essa coleta e diferente da coleta de visualizacao e da coleta IA generica.
+Coletar amostras do BME688 com a estrutura necessária para gerar `.bmerawdata`. Essa coleta é diferente da coleta de visualização e da coleta genérica de IA.
 
-## Topico MQTT
+## Tópico MQTT
 
 ```text
 puc/iot/bme688/raw
 ```
 
-## Campos obrigatorios
+## Campos obrigatórios
 
 O firmware deve publicar um JSON completo com:
 
@@ -39,9 +39,9 @@ Campos opcionais:
 - `fase`
 - `firmware_version`
 
-## Sessao, classe e fase
+## Sessão, classe e fase
 
-Use `sessao_id` para agrupar uma coleta exportavel. Use `classe` e `fase` para manter rastreabilidade:
+Use `sessao_id` para agrupar uma coleta exportável. Use `classe` e `fase` para manter a rastreabilidade:
 
 ```json
 {
@@ -66,12 +66,12 @@ O exportador inicial usa o heater profile `heater_354` com 10 passos e valida `h
 
 ## Cuidados
 
-- Nao publique valores ficticios de `sensor_id`.
-- Nao publique `timestamp_since_poweron` sintetico se o firmware nao medir esse tempo.
-- `timestamp_since_poweron` deve ser estritamente crescente dentro da sessao.
+- Não publique valores fictícios de `sensor_id`.
+- Não publique `timestamp_since_poweron` sintético se o firmware não medir esse tempo.
+- `timestamp_since_poweron` deve ser estritamente crescente dentro da sessão.
 - `scanning_cycle_index` deve estar presente.
-- Rejeicoes do coletor aparecem como `[RAW-REJEITADO]` no terminal.
+- Rejeições do coletor aparecem como `[RAW-REJEITADO]` no terminal.
 
-## Limite do BME688 unico
+## Limite do BME688 único
 
-Um unico BME688 pode gerar dados uteis para estudo, mas o BME AI-Studio foi pensado para fluxos Bosch com metadados especificos e, frequentemente, kits com multiplos sensores. Por isso, valide o `.bmerawdata` no BME AI-Studio antes de tratar o fluxo como definitivo.
+Um único BME688 pode gerar dados úteis para estudo, mas o BME AI-Studio foi pensado para fluxos Bosch com metadados específicos e, frequentemente, kits com múltiplos sensores. Por isso, valide o `.bmerawdata` no BME AI-Studio antes de tratar o fluxo como definitivo.

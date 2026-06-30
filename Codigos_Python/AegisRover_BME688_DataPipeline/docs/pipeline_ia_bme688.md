@@ -44,7 +44,7 @@ Campos BSEC podem ficar nulos enquanto o firmware publicar apenas leitura bruta.
 
 `dados_bme688_ia_inferencias` registra resultados de modelos. Use `treinamento_id` quando a inferência estiver associada a uma amostra da tabela de treinamento.
 
-## Uso com pandas/scikit-learn/PyTorch
+## Uso com pandas, scikit-learn e PyTorch
 
 Exporte o dataset:
 
@@ -61,7 +61,7 @@ df = pd.read_csv("exports/bme688_ia_treinamento.csv")
 df = df[df["classe"].notna()]
 ```
 
-Separe sessões ao criar treino e teste para evitar vazamento experimental. Uma estratégia conservadora é reservar sessões inteiras para teste.
+Separe sessões ao criar os conjuntos de treinamento e teste para evitar vazamento experimental. Uma estratégia conservadora é reservar sessões inteiras para teste.
 
 ## Uso com BME AI-Studio/BSEC/BSEC2
 

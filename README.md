@@ -1,18 +1,18 @@
 # AegisRover
 
-AegisRover e um prototipo UGV academico para IoT, navegacao e monitoramento ambiental. O projeto combina firmware ESP32/RoboCore Vespa, LiDAR LD14P, telemetria BME688 via MQTT, persistencia MySQL e camadas Python para visualizacao, treinamento de IA e exportacao Bosch BME AI-Studio.
+O AegisRover é um protótipo UGV acadêmico para IoT, navegação e monitoramento ambiental. O projeto combina firmware ESP32/RoboCore Vespa, LiDAR LD14P, telemetria BME688 via MQTT, persistência MySQL e camadas Python para visualização, treinamento de IA e exportação para o Bosch BME AI-Studio.
 
-## Estado Atual
+## Estado atual
 
 - Sensor ambiental principal: BME688.
-- Navegacao: LiDAR LD14P com parser, grade de ocupacao e modulos C para planejamento.
-- Persistencia: coletores MQTT/MySQL com tabelas separadas para visualizacao, treinamento, inferencias e exportacao Bosch.
-- Firmware: sketches Arduino/ESP32 para motores, BME688, LiDAR e integracao BME688 + LD14P.
-- Referencias: datasheets, manuais, limites operacionais e modelos 3D do suporte do LiDAR.
+- Navegação: LiDAR LD14P com parser, grade de ocupação e módulos C para planejamento.
+- Persistência: coletores MQTT/MySQL com tabelas separadas para visualização, treinamento, inferências e exportação Bosch.
+- Firmware: sketches Arduino/ESP32 para motores, BME688, LiDAR e integração BME688 + LD14P.
+- Referências: datasheets, manuais, limites operacionais e modelos 3D do suporte do LiDAR.
 
-MQ-2 e AHT10 aparecem no historico do repositorio remoto anterior, mas nesta organizacao o fluxo ambiental ativo esta centrado no BME688. O LiDAR LD14P permanece como excecao de navegacao.
+MQ-2 e AHT10 aparecem no histórico do repositório remoto anterior, mas, nesta organização, o fluxo ambiental ativo está centrado no BME688. O LiDAR LD14P permanece como a exceção de navegação.
 
-## Estrutura do Repositorio
+## Estrutura do repositório
 
 ```text
 AegisRover/
@@ -48,7 +48,7 @@ Tabelas principais:
 - `dados_bme688_ia_treinamento`
 - `dados_bme688_ia_inferencias`
 
-Topicos MQTT aceitos:
+Tópicos MQTT aceitos:
 
 ```text
 puc/iot/bme688/temperatura
@@ -75,13 +75,13 @@ Tabela dedicada:
 
 - `dados_bme688_bosch_raw`
 
-Topico MQTT raw:
+Tópico MQTT raw:
 
 ```text
 puc/iot/bme688/raw
 ```
 
-A camada Bosch trabalha em paralelo. Ela nao substitui `dados_bme688_colunar`, `dados_bme688_ia_treinamento` nem `dados_bme688_ia_inferencias`.
+A camada Bosch trabalha em paralelo. Ela não substitui `dados_bme688_colunar`, `dados_bme688_ia_treinamento` nem `dados_bme688_ia_inferencias`.
 
 ## Firmware
 
@@ -92,20 +92,20 @@ Arquivos principais:
 - `Firmwares/CodigoMotores/CodigoMotores.ino`
 - `Firmwares/LiDAR/WayPonDEV_LD14P_Wifi/WayPonDEV_LD14P_Wifi.ino`
 
-As bibliotecas Arduino compactadas em `Firmwares/Bibliotecas/` ficam fora do Git. Prefira instalar dependencias pela Arduino IDE, PlatformIO ou gerenciador oficial da biblioteca.
+As bibliotecas Arduino compactadas em `Firmwares/Bibliotecas/` ficam fora do Git. Prefira instalar dependências pela Arduino IDE, pelo PlatformIO ou pelo gerenciador oficial da biblioteca.
 
-## Navegacao LiDAR
+## Navegação LiDAR
 
-O nucleo em C fica em `Sistema_Navegacao_LiDAR/NavSys_C` e inclui:
+O núcleo em C fica em `Sistema_Navegacao_LiDAR/NavSys_C` e inclui:
 
 - parser do LD14P;
 - filtro de varredura;
-- grade de ocupacao;
-- visualizacao CSV;
+- grade de ocupação;
+- visualização CSV;
 - A*;
 - testes de parser, grid, HAL Linux e A*.
 
-Build local dos modulos C:
+Build local dos módulos C:
 
 ```powershell
 cd Sistema_Navegacao_LiDAR\NavSys_C
@@ -115,20 +115,20 @@ bash build.sh --test-astar
 bash build.sh --main
 ```
 
-## Softwares e Binarios
+## Softwares e binários
 
-SDKs Bosch, instaladores, bibliotecas compiladas, arquivos extraidos do BME AI-Studio e outros binarios grandes nao sao versionados. A pasta `Softwares/` contem apenas um README explicando como recompor o ambiente local.
+SDKs Bosch, instaladores, bibliotecas compiladas, arquivos extraídos do BME AI-Studio e outros binários grandes não são versionados. A pasta `Softwares/` contém apenas um README explicando como recompor o ambiente local.
 
-## Validacao
+## Validação
 
-Valide o repositorio antes de publicar:
+Valide o repositório antes de publicar:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\validate-project.ps1
 ```
 
-O script compila todos os arquivos Python. Em Linux/CI, quando `gcc` esta disponivel, tambem compila os alvos C principais do `NavSys_C`.
+O script compila todos os arquivos Python. Em Linux/CI, quando `gcc` está disponível, também compila os alvos C principais do `NavSys_C`.
 
 ## Autoria
 
-Projeto academico da disciplina Internet das Coisas I, Engenharia de Computacao - PUC Minas.
+Projeto acadêmico da disciplina Internet das Coisas I, Engenharia de Computação - PUC Minas.

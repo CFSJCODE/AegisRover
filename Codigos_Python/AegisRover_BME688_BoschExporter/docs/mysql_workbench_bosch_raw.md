@@ -10,7 +10,7 @@ SOURCE sql/01_create_dados_bme688_bosch_raw.sql;
 
 Ou abra o arquivo `sql/01_create_dados_bme688_bosch_raw.sql` no MySQL Workbench e execute.
 
-## Consultar ultimos registros
+## Consultar últimos registros
 
 ```sql
 USE IoT;
@@ -21,7 +21,7 @@ ORDER BY id DESC
 LIMIT 100;
 ```
 
-## Resumo por sessao
+## Resumo por sessão
 
 ```sql
 SELECT
@@ -61,7 +61,7 @@ GROUP BY sessao_id, scanning_cycle_index
 ORDER BY sessao_id, scanning_cycle_index;
 ```
 
-## Dados de uma sessao para exportacao
+## Dados de uma sessão para exportação
 
 ```sql
 SELECT
@@ -81,13 +81,13 @@ WHERE sessao_id = 'S001'
 ORDER BY timestamp_since_poweron ASC;
 ```
 
-## Verificar campos criticos nulos
+## Verificar campos críticos nulos
 
 Use `sql/03_consultas_exportacao.sql` antes de exportar.
 
-## Protecao das tabelas anteriores
+## Proteção das tabelas anteriores
 
-Esta camada nao executa `DROP`, `TRUNCATE` ou alteracoes destrutivas nas tabelas:
+Esta camada não executa `DROP`, `TRUNCATE` ou alterações destrutivas nas tabelas:
 
 - `dados_bme688_colunar`
 - `dados_bme688_ia_treinamento`

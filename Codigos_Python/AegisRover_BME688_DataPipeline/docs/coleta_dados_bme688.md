@@ -2,7 +2,7 @@
 
 ## Princípio
 
-A tabela `dados_bme688_colunar` permanece dedicada a visualização e monitoramento. A tabela `dados_bme688_ia_treinamento` só recebe amostras quando uma sessão de IA está ativa e uma classe foi definida.
+A tabela `dados_bme688_colunar` permanece dedicada à visualização e ao monitoramento. A tabela `dados_bme688_ia_treinamento` só recebe amostras quando uma sessão de IA está ativa e uma classe foi definida.
 
 ## Sequência recomendada
 
@@ -69,7 +69,7 @@ Use `fase recuperacao` para registrar a volta gradual do sensor ao estado de ref
 ## Cuidados experimentais
 
 - Colete uma classe por sessão sempre que possível.
-- Evite misturar treino e teste da mesma sessão sem controle.
+- Evite misturar conjuntos de treinamento e teste da mesma sessão sem controle.
 - Registre origem, operador e observação.
 - Aguarde estabilização do BME688 antes de confiar nos dados.
 - Prefira o tópico JSON `puc/iot/bme688/telemetria`, pois ele reduz desalinhamento temporal entre variáveis.
